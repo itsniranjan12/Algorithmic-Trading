@@ -2,7 +2,7 @@ import pandas as pd
 import yfinance as yf
 import os
 
-def fetch_and_clean_ticker_data(tickers, period='5d',save_folder = 'data'):
+def fetch_and_clean_ticker_data(tickers, period='1y',save_folder = 'data'):
     os.makedirs(save_folder, exist_ok=True)
     for ticker in tickers:
         print(f"Fetching data for {ticker}...")
