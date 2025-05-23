@@ -4,6 +4,7 @@ import os
 
 def fetch_and_clean_ticker_data(tickers, period='1y',save_folder = 'data'):
     os.makedirs(save_folder, exist_ok=True)
+    data_dict = {}
     for ticker in tickers:
         print(f"Fetching data for {ticker}...")
         data = yf.download(ticker,period=period,threads=False,progress=False)
@@ -27,6 +28,13 @@ def fetch_and_clean_ticker_data(tickers, period='1y',save_folder = 'data'):
         file_path = os.path.join(save_folder, f"{ticker}.csv")
         data.to_csv(file_path, index=False, date_format='%Y-%m-%d')    
         print(f"Data saved to {file_path}")
+        
+        data_dict[ticker] = data
+
+        return data_dict 
+    
+        
+
 
 
 if __name__ == "__main__":
