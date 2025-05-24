@@ -21,6 +21,7 @@ def fetch_and_clean_ticker_data(tickers, period='1y',save_folder = 'data'):
             "Volume": "Volume"
         })
         data = data[["Date", "Close", "High", "Low", "Open", "Volume"]]
+        data['Close'] = data['Close'].values.flatten()
         for col in data.columns:
          if col != "Volume" and pd.api.types.is_numeric_dtype(data[col]):
           data[col] = data[col].round(2)
@@ -31,7 +32,7 @@ def fetch_and_clean_ticker_data(tickers, period='1y',save_folder = 'data'):
         
         data_dict[ticker] = data
 
-        return data_dict 
+    return data_dict 
     
         
 

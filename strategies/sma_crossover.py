@@ -1,13 +1,19 @@
+import sys
+import os
 import pandas as pd
-import talib
+from ta.momentum import RSIIndicator
+sys.path.insert(0,os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from data.MyFile import fetch_and_clean_ticker_data
 
 
 def sma_rsi_crossover(data, short_window=20, long_window=50, rsi_window=14):
 
-    data['SMA_short'] = data['Close'].rolling(window=short_window).mean()
-    data['SMA_long'] = data['Close'].rolling(window=long_window).mean()
-    data['RSI'] = talib.RSI(data['Close'],timeperiod=rsi_window)
+    data['SMA_Short'] = data['Close'].rolling(window=short_window).mean()
+    data['SMA_Long'] = data['Close'].rolling(window=long_window).mean()
+    close_series = pd.Series(data['Close'].values.ravel())
+    rsi_indicator = RSIIndicator(close=close_series,window=rsi_window)
+    data['RSI'] = rsi_indicator.rsi()
     data['Signal'] = 0
     data.loc[
     (data['SMA_Short'] > data['SMA_Long']) &
@@ -33,8 +39,9 @@ for ticker in tickers:
     if ticker in cleaned_data:
         df = cleaned_data[ticker]
         result = sma_rsi_crossover(df)
-        print(f"\n{ticker} Signals:")
-        print(result[['Date', 'Close', 'SMA_Short', 'SMA_Long', 'RSI', 'Signal']].tail())
+        file_path = os.path.join("data",f"{ticker}.csv")
+        result.to_csv(file_path, index=False)
+        
 
 
 
